@@ -1,6 +1,7 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, FormEventHandler, useState } from "react";
 import "../assets/scss/login.scss";
 import { IAvatarState } from "../types";
+import { toast } from "react-toastify";
 
 const Login = () => {
     const [avatar, setAvatar] = useState<IAvatarState>({
@@ -17,11 +18,16 @@ const Login = () => {
             });
     };
 
+    const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        toast.warn("hello");
+    };
+
     return (
         <div className="login">
             <div className="item">
                 <h2>Welcome back!</h2>
-                <form>
+                <form onSubmit={handleLogin}>
                     <input type="email" placeholder="Email" name="email" />
                     <input
                         type="password"
