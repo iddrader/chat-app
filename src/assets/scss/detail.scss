@@ -1,3 +1,107 @@
 .detail {
     flex: 1;
+
+    .user {
+        padding: 1.875rem 1.25rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        border-bottom: 1px solid #dddddd35;
+
+        img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+    }
+
+    .info {
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.875rem;
+
+        .buttonsContainer {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+
+            button {
+                padding: 1rem;
+                background-color: rgba(230, 74, 105, 0.553);
+                color: white;
+                border: none;
+                border-radius: 0.3125rem;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: rgba(230, 74, 105, 0.796);
+                }
+
+                &.logout {
+                    padding: 0.625rem;
+                    background-color: #1a73e8;
+                }
+            }
+        }
+
+        .option {
+            .title {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                img {
+                    width: 30px;
+                    height: 30px;
+                    cursor: pointer;
+                    background-color: rgba(17, 25, 40, 0.3);
+                    padding: 0.625rem;
+                    border-radius: 50%;
+                }
+            }
+
+            .photos {
+                display: flex;
+                flex-direction: column;
+                gap: 1.25rem;
+                margin-top: 1.25rem;
+
+                .photoItem {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+
+                    .photoDetail {
+                        display: flex;
+                        align-items: center;
+                        gap: 1.25rem;
+
+                        img {
+                            width: 40px;
+                            height: 40px;
+                            border-radius: 50%;
+                        }
+
+                        span {
+                            font-size: 0.875rem;
+                            font-weight: 300;
+                            color: lightgray;
+                        }
+                    }
+
+                    .icon {
+                        width: 30px;
+                        height: 30px;
+                        padding: 0.625rem;
+                        background-color: rgba(17, 25, 40, 0.3);
+                        border-radius: 50%;
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+    }
 }
