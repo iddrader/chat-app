@@ -27,6 +27,10 @@ Install dependencies
 
 `npm install`
 
+Add env variables
+-   VITE_SUPABASE_URL for supabase api url
+-   VITE_SUPABASE_KEY for supabase key
+
 Run the project
 
 `npm run dev`
