@@ -1,6 +1,18 @@
+import { toast } from "react-toastify";
 import "../assets/scss/detail.scss";
+import supabase from "../supabase";
+import { useDispatch } from "react-redux";
+import { setSession } from "../slices/sessionSlice";
 
 const Detail = () => {
+    const dispatch = useDispatch();
+
+    const handleLogout = async () => {
+        const { error } = await supabase.auth.signOut();
+        if (error) toast.error("Error logging out, please, try again");
+        else dispatch(setSession(null));
+    };
+
     return (
         <div className="detail">
             <div className="user">
@@ -67,7 +79,9 @@ const Detail = () => {
                 </div>
                 <div className="buttonsContainer">
                     <button>Block User</button>
-                    <button className="logout">Logout</button>
+                    <button className="logout" onClick={handleLogout}>
+                        Logout
+                    </button>
                 </div>
             </div>
         </div>

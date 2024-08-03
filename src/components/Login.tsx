@@ -1,9 +1,14 @@
-import { ChangeEvent, FormEventHandler, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import "../assets/scss/login.scss";
 import { IAvatarState } from "../types";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import supabase from "../supabase";
+import { setSession } from "../slices/sessionSlice";
 
 const Login = () => {
+    const dispatch = useDispatch();
+
     const [avatar, setAvatar] = useState<IAvatarState>({
         file: null,
         imageURL: "",
@@ -18,9 +23,21 @@ const Login = () => {
             });
     };
 
-    const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        toast.warn("hello");
+        const form = event.target as HTMLFormElement;
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: form.email.value,
+            password: form.password.value,
+        });
+
+        error && toast.error("Wrong email or password");
+        data && dispatch(setSession(data.session));
+    };
+
+    const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const form = event.target as HTMLFormElement;
     };
 
     return (
