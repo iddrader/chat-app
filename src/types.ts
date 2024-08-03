@@ -16,4 +16,17 @@ export interface ICustomUser {
     username: string | null;
     userID: string | null;
     avatar: string | null;
+    chats_list: number[] | null;
+}
+
+export interface IChat {
+    chatId: string;
+    recieverId: string;
+    lastMessage: string;
+    updatedAt: string[];
+    isSeen: string[];
+}
+
+export interface IChatsList {
+    value: IChat[] | undefined;
 }

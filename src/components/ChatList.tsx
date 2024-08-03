@@ -1,9 +1,18 @@
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import "../assets/scss/chatList.scss";
 import AddUser from "./AddUser";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store";
+import { IChat } from "../types";
+import supabase from "../supabase";
 
 const ChatList = () => {
     const [addMode, setAddMode] = useState(false);
+    const user = useSelector((state: RootState) => state.session.customUser);
+    const userChats = useSelector((state: RootState) => state.chats.value);
+    const dispatch = useDispatch();
+
+    console.log(userChats);
 
     return (
         <div className="chatList">
@@ -19,34 +28,16 @@ const ChatList = () => {
                     onClick={() => setAddMode((prevState) => !prevState)}
                 />
             </div>
-            <div className="item">
-                <img src="/avatar.png" alt="" />
-                <div className="textContainer">
-                    <span>Jane Doe</span>
-                    <p>Hello</p>
+            {userChats?.map((chat) => (
+                <div className="item">
+                    <img src="/avatar.png" alt="" />
+                    <div className="texts">
+                        <span>{chat.reciever}</span>
+                        <p>{chat.lastMessage}</p>
+                    </div>
                 </div>
-            </div>
-            <div className="item">
-                <img src="/avatar.png" alt="" />
-                <div className="textContainer">
-                    <span>Jane Doe</span>
-                    <p>Hello</p>
-                </div>
-            </div>
-            <div className="item">
-                <img src="/avatar.png" alt="" />
-                <div className="textContainer">
-                    <span>Jane Doe</span>
-                    <p>Hello</p>
-                </div>
-            </div>
-            <div className="item">
-                <img src="/avatar.png" alt="" />
-                <div className="textContainer">
-                    <span>Jane Doe</span>
-                    <p>Hello</p>
-                </div>
-            </div>
+            ))}
+
             {addMode && <AddUser />}
         </div>
     );

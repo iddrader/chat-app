@@ -3,8 +3,8 @@ import "../assets/scss/login.scss";
 import { IAvatarState } from "../types";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import supabase, { createCustomUser } from "../supabase";
-import { setSession } from "../slices/sessionSlice";
+import supabase, { createCustomUser, getCurrentCustomUser } from "../supabase";
+import { setCustomUser, setSession } from "../slices/sessionSlice";
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -32,7 +32,14 @@ const Login = () => {
         });
 
         error && toast.error("Wrong email or password");
-        data && dispatch(setSession(data.session));
+        if (data) {
+            dispatch(setSession(data.session));
+            dispatch(
+                setCustomUser(
+                    await getCurrentCustomUser(data.session?.user.id || null)
+                )
+            );
+        }
     };
 
     const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {

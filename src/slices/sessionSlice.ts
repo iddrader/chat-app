@@ -11,10 +11,10 @@ const initialState: ISessionStore = {
 // Set initial custom user based on authenticatied user ID
 if (initialState.value)
     initialState.customUser = await getCurrentCustomUser(
-        initialState.value?.user.id || null
+        initialState.value?.user.id
     );
 
-const counterSlice = createSlice({
+const sessionSlice = createSlice({
     name: "session",
     initialState,
     reducers: {
@@ -27,5 +27,5 @@ const counterSlice = createSlice({
     },
 });
 
-export const { setSession, setCustomUser } = counterSlice.actions;
-export default counterSlice.reducer;
+export const { setSession, setCustomUser } = sessionSlice.actions;
+export default sessionSlice.reducer;

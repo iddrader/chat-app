@@ -1,9 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
-import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { setCustomUser, setSession } from "./slices/sessionSlice";
-import { RootState } from "./store";
-import { ICustomUser } from "./types";
+import { IChat, ICustomUser } from "./types";
+import { v4 as uuidv4 } from "uuid";
 
 const supabase = createClient(
     import.meta.env.VITE_SUPABASE_URL,
@@ -17,10 +15,11 @@ export const createCustomUser = async (
 ) => {
     const { data, error } = await supabase.storage
         .from("storage")
-        .upload(avatar.name, avatar);
+        .upload(uuidv4(), avatar);
     await supabase
-        .from("customUser")
-        .insert({ userID: id, username: username, avatar: data?.fullPath });
+        .from("customUsers")
+        .insert({ id: id, username: username, avatar: data?.fullPath })
+        .then(({ error }) => console.log(error));
     error && toast.error(error.message);
 };
 
@@ -35,14 +34,44 @@ export const getCurrentCustomUser = async (
     id: string | null
 ): Promise<ICustomUser | null> => {
     const { data, error } = await supabase
-        .from("customUser")
+        .from("customUsers")
         .select()
-        .eq("userID", id);
+        .eq("id", id);
 
     if (error) {
         toast.error(error.message);
         return null;
     } else return data[0];
+};
+
+export const getCurrentChats = async (): Promise<IChat[] | undefined> => {
+    const session = await getCurrentSession();
+
+    const { data, error } = await supabase
+        .from("userChats")
+        .select()
+        .eq("id", session?.user.id);
+
+    // if (data) return data[0].chats;
+    if (!data) return;
+
+    const chatPromises = await data[0].chats.map(async (chat: IChat) => {
+        const { data, error } = await supabase
+            .from("customUsers")
+            .select("username")
+            .eq("id", chat.recieverId);
+        if (!data) return;
+
+        const item = {
+            ...chat,
+            reciever: data[0].username,
+        };
+
+        return item;
+    });
+
+    const response = await Promise.all(chatPromises);
+    return response;
 };
 
 export default supabase;

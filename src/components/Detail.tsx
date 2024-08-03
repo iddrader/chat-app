@@ -10,7 +10,7 @@ const Detail = () => {
     const handleLogout = async () => {
         const { error } = await supabase.auth.signOut();
         if (error) toast.error("Error logging out, please, try again");
-        else dispatch(setSession(null));
+        dispatch(setSession(null));
     };
 
     return (
