@@ -22,6 +22,7 @@ export interface ICustomUser {
 export interface IChat {
     chatId: string;
     recieverId: string;
+    reciever: string | undefined;
     lastMessage: string;
     updatedAt: string[];
     isSeen: string[];
