@@ -52,8 +52,8 @@ export const getCurrentChats = async (): Promise<IChat[] | undefined> => {
         .select()
         .eq("id", session?.user.id);
 
-    // if (data) return data[0].chats;
-    if (!data) return;
+    if (data?.length == 0 || !data) return;
+    if (data[0].chats === null) return [];
 
     const chatPromises = await data[0].chats.map(async (chat: IChat) => {
         const { data, error } = await supabase

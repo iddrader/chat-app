@@ -19,13 +19,19 @@ export interface ICustomUser {
     chats_list: number[] | null;
 }
 
+export interface ISearchResultUser {
+    id: string | null;
+    username: string | null;
+    avatar: string | undefined;
+}
+
 export interface IChat {
     chatId: string;
     recieverId: string;
     reciever: string | undefined;
     lastMessage: string;
-    updatedAt: string[];
-    isSeen: string[];
+    updatedAt: string;
+    isSeen: string;
 }
 
 export interface IChatsList {
