@@ -7,4 +7,13 @@ export interface IAvatarState {
 
 export interface ISessionStore {
     value: Session | null;
+    customUser: ICustomUser | null;
+}
+
+export interface ICustomUser {
+    id: string | null;
+    created_at: string | null;
+    username: string | null;
+    userID: string | null;
+    avatar: string | null;
 }

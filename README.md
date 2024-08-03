@@ -14,5 +14,7 @@ Technologies used to make this project different from Lama Dev's:
 # Install
 
 `npm install`
+
 `npm run dev`
+
 Then visit localhost:5173

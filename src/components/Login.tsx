@@ -3,7 +3,7 @@ import "../assets/scss/login.scss";
 import { IAvatarState } from "../types";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import supabase from "../supabase";
+import supabase, { createCustomUser } from "../supabase";
 import { setSession } from "../slices/sessionSlice";
 
 const Login = () => {
@@ -25,7 +25,7 @@ const Login = () => {
 
     const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const form = event.target as HTMLFormElement;
+        const form = event.currentTarget as HTMLFormElement;
         const { data, error } = await supabase.auth.signInWithPassword({
             email: form.email.value,
             password: form.password.value,
@@ -37,7 +37,22 @@ const Login = () => {
 
     const handleRegister = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const form = event.target as HTMLFormElement;
+        const form = event.currentTarget as HTMLFormElement;
+        await supabase.auth
+            .signUp({
+                email: form.email.value,
+                password: form.password.value,
+            })
+            .then(({ data, error }) => {
+                data.user?.id &&
+                    createCustomUser(
+                        data.user?.id,
+                        form.username.value,
+                        form.avatar.files[0]
+                    );
+                error && toast.error(error.message);
+                dispatch(setSession(data.session));
+            });
     };
 
     return (
@@ -57,7 +72,7 @@ const Login = () => {
             <div className="separator"></div>
             <div className="item">
                 <h2>Create an account</h2>
-                <form>
+                <form onSubmit={handleRegister}>
                     <label htmlFor="file">
                         <img src={avatar.imageURL || "/avatar.png"} alt="" />
                         Upload an image
@@ -65,6 +80,7 @@ const Login = () => {
                     <input
                         type="file"
                         id="file"
+                        name="avatar"
                         style={{ display: "none" }}
                         onChange={handleAvatarChange}
                     />

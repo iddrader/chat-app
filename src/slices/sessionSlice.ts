@@ -1,11 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Session } from "@supabase/supabase-js";
-import { ISessionStore } from "../types";
-import supabase from "../supabase";
+import { ICustomUser, ISessionStore } from "../types";
+import { getCurrentCustomUser, getCurrentSession } from "../supabase";
 
 const initialState: ISessionStore = {
-    value: (await supabase.auth.getSession()).data.session,
+    value: await getCurrentSession(),
+    customUser: null,
 };
+
+// Set initial custom user based on authenticatied user ID
+if (initialState.value)
+    initialState.customUser = await getCurrentCustomUser(
+        initialState.value?.user.id || null
+    );
 
 const counterSlice = createSlice({
     name: "session",
@@ -14,8 +21,11 @@ const counterSlice = createSlice({
         setSession: (state, action: PayloadAction<Session | null>) => {
             state.value = action.payload;
         },
+        setCustomUser: (state, action: PayloadAction<ICustomUser | null>) => {
+            state.customUser = action.payload;
+        },
     },
 });
 
-export const { setSession } = counterSlice.actions;
+export const { setSession, setCustomUser } = counterSlice.actions;
 export default counterSlice.reducer;
