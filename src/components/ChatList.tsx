@@ -1,16 +1,13 @@
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 import "../assets/scss/chatList.scss";
 import AddUser from "./AddUser";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../store";
-import { IChat } from "../types";
-import supabase from "../supabase";
+import { getAvatar } from "../supabase";
 
 const ChatList = () => {
     const [addMode, setAddMode] = useState(false);
-    const user = useSelector((state: RootState) => state.session.customUser);
     const userChats = useSelector((state: RootState) => state.chats.value);
-    const dispatch = useDispatch();
 
     console.log(userChats);
 
@@ -30,7 +27,7 @@ const ChatList = () => {
             </div>
             {userChats?.map((chat) => (
                 <div className="item">
-                    <img src="/avatar.png" alt="" />
+                    <img src={getAvatar(chat.avatar)} alt="" />
                     <div className="texts">
                         <span>{chat.reciever}</span>
                         <p>{chat.lastMessage}</p>

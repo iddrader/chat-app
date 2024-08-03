@@ -32,6 +32,7 @@ export interface IChat {
     lastMessage: string;
     updatedAt: string;
     isSeen: string;
+    avatar: string;
 }
 
 export interface IChatsList {

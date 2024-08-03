@@ -1,10 +1,11 @@
 import { useRef, useState } from "react";
 import "../assets/scss/addUser.scss";
 import supabase from "../supabase";
-import { IChat, ISearchResultUser } from "../types";
+import { ISearchResultUser } from "../types";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import { v4 as uuidv4 } from "uuid";
+import { toast } from "react-toastify";
 
 const getAvatar = (path: string | null | undefined) => {
     if (path) {
@@ -50,6 +51,7 @@ const AddUser = () => {
                 id: user?.id,
                 chats: [newChat],
             });
+            error && toast.error(error.message);
         } else if (data) {
             data[0].chats.push(newChat);
             console.log(data[0]);

@@ -1,14 +1,7 @@
 import { useSelector } from "react-redux";
 import "../assets/scss/userInfo.scss";
 import { RootState } from "../store";
-import supabase from "../supabase";
-
-const getAvatar = (path: string | null | undefined) => {
-    if (path) {
-        const { data } = supabase.storage.from("").getPublicUrl(path);
-        return data.publicUrl;
-    } else return "./avatar.png";
-};
+import { getAvatar } from "../supabase";
 
 const UserInfo = () => {
     const user = useSelector((state: RootState) => state.session.customUser);

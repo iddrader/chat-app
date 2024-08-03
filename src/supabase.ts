@@ -44,6 +44,13 @@ export const getCurrentCustomUser = async (
     } else return data[0];
 };
 
+export const getAvatar = (path: string | null | undefined) => {
+    if (path) {
+        const { data } = supabase.storage.from("").getPublicUrl(path);
+        return data.publicUrl;
+    } else return "./avatar.png";
+};
+
 export const getCurrentChats = async (): Promise<IChat[] | undefined> => {
     const session = await getCurrentSession();
 
@@ -51,6 +58,7 @@ export const getCurrentChats = async (): Promise<IChat[] | undefined> => {
         .from("userChats")
         .select()
         .eq("id", session?.user.id);
+    error && toast.error(error.message);
 
     if (data?.length == 0 || !data) return;
     if (data[0].chats === null) return [];
@@ -58,15 +66,17 @@ export const getCurrentChats = async (): Promise<IChat[] | undefined> => {
     const chatPromises = await data[0].chats.map(async (chat: IChat) => {
         const { data, error } = await supabase
             .from("customUsers")
-            .select("username")
+            .select("username, avatar")
             .eq("id", chat.recieverId);
+        error && toast.error(error.message);
+
         if (!data) return;
 
         const item = {
             ...chat,
             reciever: data[0].username,
+            avatar: data[0].avatar,
         };
-
         return item;
     });
 
