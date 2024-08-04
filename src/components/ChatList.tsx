@@ -1,15 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../assets/scss/chatList.scss";
 import AddUser from "./AddUser";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import { getAvatar } from "../supabase";
+import supabase, { getAvatar, getCurrentChats } from "../supabase";
+import { setChats } from "../slices/chatsSlice";
 
 const ChatList = () => {
     const [addMode, setAddMode] = useState(false);
     const userChats = useSelector((state: RootState) => state.chats.value);
+    const dispatch = useDispatch();
 
-    console.log(userChats);
+    const handleInserts = async () => {
+        dispatch(setChats(await getCurrentChats()));
+        console.log("done");
+    };
+
+    useEffect(() => {
+        supabase
+            .channel("userChats")
+            .on(
+                "postgres_changes",
+                { event: "UPDATE", schema: "public", table: "userChats" },
+                handleInserts
+            )
+            .subscribe();
+    }, []);
 
     return (
         <div className="chatList">

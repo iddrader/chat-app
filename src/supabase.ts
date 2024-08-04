@@ -51,7 +51,7 @@ export const getAvatar = (path: string | null | undefined) => {
     } else return "./avatar.png";
 };
 
-export const getCurrentChats = async (): Promise<IChat[] | undefined> => {
+export const getCurrentChats = async (): Promise<IChat[]> => {
     const session = await getCurrentSession();
 
     const { data, error } = await supabase
@@ -60,7 +60,7 @@ export const getCurrentChats = async (): Promise<IChat[] | undefined> => {
         .eq("id", session?.user.id);
     error && toast.error(error.message);
 
-    if (data?.length == 0 || !data) return;
+    if (data?.length == 0 || !data) return [];
     if (data[0].chats === null) return [];
 
     const chatPromises = await data[0].chats.map(async (chat: IChat) => {
@@ -81,7 +81,13 @@ export const getCurrentChats = async (): Promise<IChat[] | undefined> => {
     });
 
     const response = await Promise.all(chatPromises);
-    return response;
+
+    // sort by last message(or chat creation) date
+    return response.sort((a, b) => b.updatedAt - a.updatedAt);
 };
+
+// export const getChat(id) = async () => {
+//     return supabase.from('chats')
+// }
 
 export default supabase;

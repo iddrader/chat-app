@@ -26,7 +26,7 @@ const AddUser = () => {
             .from("customUsers")
             .select("id, username, avatar")
             .like("username", `%${searchInput.current?.value}%`);
-
+        error && toast.error(error.message);
         setSearchResults(() => data as ISearchResultUser[]);
     };
 
@@ -37,11 +37,12 @@ const AddUser = () => {
             .from("userChats")
             .select()
             .eq("id", user?.id);
+        error && toast.error(error.message);
 
         const newChat = {
             chatId: uuidv4(),
             isSeen: "true",
-            updatedAt: "",
+            updatedAt: Date.now(),
             recieverId: id,
             lastMessage: "",
         };
@@ -54,18 +55,17 @@ const AddUser = () => {
             error && toast.error(error.message);
         } else if (data) {
             data[0].chats.push(newChat);
-            console.log(data[0]);
             const { error } = await supabase
                 .from("userChats")
                 .update({ chats: data[0].chats })
                 .eq("id", user?.id);
-            console.log(error);
+            error && toast.error(error.message);
         }
     };
 
     return (
         <div className="addUser">
-            <form action="" onSubmit={handleSearch}>
+            <form onSubmit={handleSearch}>
                 <input
                     type="text"
                     placeholder="Username"
