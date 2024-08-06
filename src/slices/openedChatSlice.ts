@@ -1,10 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IChat, IOpenedChat } from "../types";
 
-const initialState: IOpenedChat = {
-    id: "",
-    created_at: "",
-    messages: [],
+const initialState = {
+    value: undefined,
 };
 
 const openedChatSlice = createSlice({
@@ -12,7 +10,7 @@ const openedChatSlice = createSlice({
     initialState,
     reducers: {
         setOpenedChat: (state, action: PayloadAction<IOpenedChat>) => {
-            state = action.payload;
+            state.value = action.payload;
         },
     },
 });

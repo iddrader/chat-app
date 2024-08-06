@@ -5,13 +5,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import supabase, { getAvatar, getCurrentChats } from "../supabase";
 import { setChats } from "../slices/chatsSlice";
-import { IChat } from "../types";
+import { IChat, IOpenedChat } from "../types";
 import { v4 as uuidv4 } from "uuid";
+import { setOpenedChat } from "../slices/openedChatSlice";
+import { toast } from "react-toastify";
 
 const ChatList = () => {
     const [addMode, setAddMode] = useState(false);
     const userChats = useSelector((state: RootState) => state.chats.value);
-    // const openedChat = useSelector((state: RootState) => state.openedChat);
+
     const dispatch = useDispatch();
 
     const handleUserChatsUpdate = async () => {
@@ -20,7 +22,12 @@ const ChatList = () => {
 
     const handleChatOpen = async (chat: IChat) => {
         // TODO open chat
-        // const {data, error} =
+        const { data, error } = await supabase
+            .from("chats")
+            .select()
+            .eq("id", chat.chatId);
+        data && dispatch(setOpenedChat(data[0] as IOpenedChat));
+        error && toast.error(error.message);
     };
 
     useEffect(() => {

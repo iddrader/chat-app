@@ -44,3 +44,7 @@ export interface IOpenedChat {
     created_at: string;
     messages: object[];
 }
+
+export interface IOpenedChatStore {
+    value: IOpenedChat | undefined;
+}
