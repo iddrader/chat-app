@@ -35,11 +35,12 @@ const AddUser = () => {
 
     const handleAddUser = async (id: string | null) => {
         if (id === null) return;
+        const time = Date.now();
 
         const newUserChat: IChat = {
             chatId: uuidv4(),
             isSeen: "true",
-            updatedAt: `${Date.now()}`,
+            updatedAt: `${time}`,
             recieverId: id,
             lastMessage: "",
             reciever: "",
@@ -54,20 +55,32 @@ const AddUser = () => {
         error && toast.error(error.message);
 
         // add chat entry to user's chats list
-        if (data?.length == 0) {
-            const { error } = await supabase.from("userChats").insert({
-                id: user?.id,
-                chats: [newUserChat],
-            });
-            dispatch(setChats([newUserChat]));
-            error && toast.error(error.message);
-        } else if (userChats) {
-            const { error } = await supabase
+
+        if (userChats) {
+            await supabase
                 .from("userChats")
                 .update({ chats: [...userChats, newUserChat] })
-                .eq("id", user?.id);
-            error && toast.error(error.message);
+                .eq("id", user?.id)
+                .then(({ error }) => toast.error(error?.message));
             dispatch(setChats([...userChats, newUserChat]));
+
+            const { data, error } = await supabase
+                .from("userChats")
+                .update({
+                    chats: [
+                        ...userChats,
+                        {
+                            chatId: newUserChat.chatId,
+                            isSeen: "true",
+                            updatedAt: `${time}`,
+                            recieverId: user?.id,
+                            lastMessage: "",
+                            reciever: "",
+                            avatar: "",
+                        },
+                    ],
+                })
+                .eq("id", id);
         }
 
         // create chats row for an opened chat with messages

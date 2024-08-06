@@ -3,7 +3,11 @@ import "../assets/scss/login.scss";
 import { IAvatarState } from "../types";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import supabase, { createCustomUser, getCurrentCustomUser } from "../supabase";
+import supabase, {
+    createCustomUser,
+    createUserChats,
+    getCurrentCustomUser,
+} from "../supabase";
 import { setCustomUser, setSession } from "../slices/sessionSlice";
 
 const Login = () => {
@@ -57,6 +61,7 @@ const Login = () => {
                         form.username.value,
                         form.avatar.files[0]
                     );
+                createUserChats(data.user?.id);
                 error && toast.error(error.message);
                 dispatch(setSession(data.session));
             });

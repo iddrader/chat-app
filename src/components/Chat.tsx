@@ -28,9 +28,11 @@ const Chat = () => {
     const handleNewMessage = async (
         event: React.FormEvent<HTMLFormElement>
     ) => {
-        // TODO set updated at for userChat
+        // TODO set updatedAt for userChat (and new message indication)
         event.preventDefault();
         const element = event.currentTarget as HTMLFormElement;
+        const time = Date.now();
+
         const { data, error } = await supabase
             .from("chats")
             .select()
@@ -41,16 +43,17 @@ const Chat = () => {
             senderId: user?.id,
             text: element.message.value,
             image: "",
-            createdAt: Date.now(),
+            createdAt: time,
         };
 
-        if (data)
+        if (data) {
             await supabase
                 .from("chats")
                 .update({
                     messages: [...data[0].messages, newMessage],
                 })
                 .eq("id", openedChat?.id);
+        }
     };
 
     return (

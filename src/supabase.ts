@@ -23,6 +23,14 @@ export const createCustomUser = async (
     error && toast.error(error.message);
 };
 
+export const createUserChats = async (id: string | undefined) => {
+    const { error } = await supabase.from("userChats").insert({
+        id: id,
+        chats: [],
+    });
+    error && toast.error(error.message);
+};
+
 export const getCurrentSession = async () => {
     const { data, error } = await supabase.auth.getSession();
     error && toast.error(error.message);
