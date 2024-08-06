@@ -36,12 +36,6 @@ const AddUser = () => {
     const handleAddUser = async (id: string | null) => {
         if (id === null) return;
 
-        // const { data, error } = await supabase
-        //     .from("userChats")
-        //     .select()
-        //     .eq("id", user?.id);
-        // error && toast.error(error.message);
-
         const newUserChat: IChat = {
             chatId: uuidv4(),
             isSeen: "true",
@@ -52,21 +46,37 @@ const AddUser = () => {
             avatar: "",
         };
 
-        if (userChats?.length == 0) {
+        // to check if the userChats row exists for this user
+        const { data, error } = await supabase
+            .from("userChats")
+            .select()
+            .eq("id", user?.id);
+
+        // add chat entry to user's chats list
+        if (data?.length == 0) {
             const { error } = await supabase.from("userChats").insert({
                 id: user?.id,
                 chats: [newUserChat],
             });
+            dispatch(setChats([newUserChat]));
             error && toast.error(error.message);
         } else if (userChats) {
-            // data[0].chats.push(newUserChat);
-            dispatch(setChats([...userChats, newUserChat]));
             const { error } = await supabase
                 .from("userChats")
-                .update({ chats: userChats })
+                .update({ chats: [...userChats, newUserChat] })
                 .eq("id", user?.id);
             error && toast.error(error.message);
+            dispatch(setChats([...userChats, newUserChat]));
         }
+
+        // create chats row for an opened chat with messages
+        await supabase
+            .from("chats")
+            .insert({
+                id: newUserChat.chatId,
+                messages: [],
+            })
+            .then(({ error }) => toast.error(error?.message));
     };
 
     return (
@@ -82,7 +92,7 @@ const AddUser = () => {
             </form>
             {searchResults &&
                 searchResults.map((result) => (
-                    <div className="user">
+                    <div className="user" key={uuidv4()}>
                         <div className="detail">
                             <img src={getAvatar(result.avatar)} alt="" />
                             <span>{result.username}</span>

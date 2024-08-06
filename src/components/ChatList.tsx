@@ -6,6 +6,7 @@ import { RootState } from "../store";
 import supabase, { getAvatar, getCurrentChats } from "../supabase";
 import { setChats } from "../slices/chatsSlice";
 import { IChat } from "../types";
+import { v4 as uuidv4 } from "uuid";
 
 const ChatList = () => {
     const [addMode, setAddMode] = useState(false);
@@ -48,7 +49,11 @@ const ChatList = () => {
                 />
             </div>
             {userChats?.map((chat) => (
-                <div className="item" onClick={() => handleChatOpen(chat)}>
+                <div
+                    className="item"
+                    onClick={() => handleChatOpen(chat)}
+                    key={uuidv4()}
+                >
                     <img src={getAvatar(chat.avatar)} alt="" />
                     <div className="texts">
                         <span>{chat.reciever}</span>
