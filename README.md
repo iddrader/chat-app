@@ -1,5 +1,10 @@
 # React firebase chat app
 
+Minimal functionality is completed. Things that are left to do: realtime refresh of messages, images in chat, details buttons (blocked, chat images)
+
+![image](https://github.com/user-attachments/assets/be021f67-f2d3-435f-97a0-0f56c11bcfde)
+
+
 Background image <a href="http://www.freepik.com">Designed by Freepik</a> (TODO change background / add option to choose custom / add watermark for this one on deploy)
 
 Inspired by Lama Dev (design and HTML template)
