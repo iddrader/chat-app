@@ -16,7 +16,7 @@ export interface ICustomUser {
     username: string | null;
     userID: string | null;
     avatar: string | null;
-    chats_list: number[] | null;
+    chats_list: string[] | null;
 }
 
 export interface ISearchResultUser {
@@ -37,4 +37,10 @@ export interface IChat {
 
 export interface IChatsList {
     value: IChat[] | undefined;
+}
+
+export interface IOpenedChat {
+    id: string;
+    created_at: string;
+    messages: object[];
 }

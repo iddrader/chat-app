@@ -1,11 +1,12 @@
 import { useRef, useState } from "react";
 import "../assets/scss/addUser.scss";
 import supabase from "../supabase";
-import { ISearchResultUser } from "../types";
-import { useSelector } from "react-redux";
+import { IChat, ISearchResultUser } from "../types";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "react-toastify";
+import { setChats } from "../slices/chatsSlice";
 
 const getAvatar = (path: string | null | undefined) => {
     if (path) {
@@ -16,6 +17,8 @@ const getAvatar = (path: string | null | undefined) => {
 
 const AddUser = () => {
     const user = useSelector((state: RootState) => state.session.customUser);
+    const userChats = useSelector((state: RootState) => state.chats.value);
+    const dispatch = useDispatch();
     const [searchResults, setSearchResults] = useState<ISearchResultUser[]>();
     const searchInput = useRef<HTMLInputElement>(null);
 
@@ -33,31 +36,34 @@ const AddUser = () => {
     const handleAddUser = async (id: string | null) => {
         if (id === null) return;
 
-        const { data, error } = await supabase
-            .from("userChats")
-            .select()
-            .eq("id", user?.id);
-        error && toast.error(error.message);
+        // const { data, error } = await supabase
+        //     .from("userChats")
+        //     .select()
+        //     .eq("id", user?.id);
+        // error && toast.error(error.message);
 
-        const newChat = {
+        const newUserChat: IChat = {
             chatId: uuidv4(),
             isSeen: "true",
-            updatedAt: Date.now(),
+            updatedAt: `${Date.now()}`,
             recieverId: id,
             lastMessage: "",
+            reciever: "",
+            avatar: "",
         };
 
-        if (data?.length == 0) {
+        if (userChats?.length == 0) {
             const { error } = await supabase.from("userChats").insert({
                 id: user?.id,
-                chats: [newChat],
+                chats: [newUserChat],
             });
             error && toast.error(error.message);
-        } else if (data) {
-            data[0].chats.push(newChat);
+        } else if (userChats) {
+            // data[0].chats.push(newUserChat);
+            dispatch(setChats([...userChats, newUserChat]));
             const { error } = await supabase
                 .from("userChats")
-                .update({ chats: data[0].chats })
+                .update({ chats: userChats })
                 .eq("id", user?.id);
             error && toast.error(error.message);
         }

@@ -5,15 +5,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import supabase, { getAvatar, getCurrentChats } from "../supabase";
 import { setChats } from "../slices/chatsSlice";
+import { IChat } from "../types";
 
 const ChatList = () => {
     const [addMode, setAddMode] = useState(false);
     const userChats = useSelector((state: RootState) => state.chats.value);
+    // const openedChat = useSelector((state: RootState) => state.openedChat);
     const dispatch = useDispatch();
 
-    const handleInserts = async () => {
+    const handleUserChatsUpdate = async () => {
         dispatch(setChats(await getCurrentChats()));
-        console.log("done");
+    };
+
+    const handleChatOpen = async (chat: IChat) => {
+        // TODO open chat
+        // const {data, error} =
     };
 
     useEffect(() => {
@@ -22,7 +28,7 @@ const ChatList = () => {
             .on(
                 "postgres_changes",
                 { event: "UPDATE", schema: "public", table: "userChats" },
-                handleInserts
+                handleUserChatsUpdate
             )
             .subscribe();
     }, []);
@@ -42,7 +48,7 @@ const ChatList = () => {
                 />
             </div>
             {userChats?.map((chat) => (
-                <div className="item">
+                <div className="item" onClick={() => handleChatOpen(chat)}>
                     <img src={getAvatar(chat.avatar)} alt="" />
                     <div className="texts">
                         <span>{chat.reciever}</span>
