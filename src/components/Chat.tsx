@@ -3,11 +3,14 @@ import "../assets/scss/chat.scss";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
+import supabase, { getAvatar } from "../supabase";
+import { v4 as uuidv4 } from "uuid";
 
 const Chat = () => {
     const [emojiOpened, setEmojiOpened] = useState(false);
     const [messageInput, setMessageInput] = useState("");
     const lastMessageRef = useRef<HTMLDivElement>(null);
+    const user = useSelector((state: RootState) => state.session.customUser);
     const openedChat = useSelector(
         (state: RootState) => state.openedChat.value
     );
@@ -16,9 +19,39 @@ const Chat = () => {
         setMessageInput((prev) => prev + event.emoji);
     };
 
+    const convertMsToSeconds = (ms: number) => Math.floor(ms / 60000);
+
     useEffect(() => {
         lastMessageRef.current?.scrollIntoView();
     }, [openedChat]);
+
+    const handleNewMessage = async (
+        event: React.FormEvent<HTMLFormElement>
+    ) => {
+        // TODO set updated at for userChat
+        event.preventDefault();
+        const element = event.currentTarget as HTMLFormElement;
+        const { data, error } = await supabase
+            .from("chats")
+            .select()
+            .eq("id", openedChat?.id);
+
+        const newMessage = {
+            chatId: openedChat?.id,
+            senderId: user?.id,
+            text: element.message.value,
+            image: "",
+            createdAt: Date.now(),
+        };
+
+        if (data)
+            await supabase
+                .from("chats")
+                .update({
+                    messages: [...data[0].messages, newMessage],
+                })
+                .eq("id", openedChat?.id);
+    };
 
     return (
         <div className="chat">
@@ -26,9 +59,9 @@ const Chat = () => {
                 <>
                     <div className="top">
                         <div className="user">
-                            <img src="/avatar.png" alt="" />
+                            <img src={getAvatar(openedChat.avatar)} alt="" />
                             <div className="texts">
-                                <span>Jane Doe</span>
+                                <span>{openedChat.reciever}</span>
                                 <p>Lorem ipsum dolor sit amet.</p>
                             </div>
                         </div>
@@ -39,71 +72,34 @@ const Chat = () => {
                         </div>
                     </div>
                     <div className="center">
-                        <div className="message">
-                            <img src="/avatar.png" alt="" />
-                            <div className="texts">
-                                <p>
-                                    Lorem ipsum dolor sit amet consectetur
-                                    adipisicing elit. Exercitationem eveniet
-                                    quasi in, molestiae eaque velit fugiat modi
-                                    quaerat delectus inventore.
-                                </p>
-                                <span>10 min ago</span>
+                        {openedChat.messages.map((message) => (
+                            <div
+                                className={
+                                    message.senderId == user?.id
+                                        ? "message own"
+                                        : "message"
+                                }
+                                key={uuidv4()}
+                            >
+                                <div className="texts">
+                                    {message.image && (
+                                        <img
+                                            src="https://static.vecteezy.com/system/resources/thumbnails/036/431/995/small/ai-generated-colorful-starry-sky-with-sunset-background-in-anime-style-generative-ai-photo.jpg"
+                                            alt=""
+                                        />
+                                    )}
+                                    <p>{message.text}</p>
+                                    <span>
+                                        {convertMsToSeconds(
+                                            Date.now() - +message.createdAt
+                                        ) + " min ago"}
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                        <div className="message own">
-                            <div className="texts">
-                                <img
-                                    src="https://static.vecteezy.com/system/resources/thumbnails/036/431/995/small/ai-generated-colorful-starry-sky-with-sunset-background-in-anime-style-generative-ai-photo.jpg"
-                                    alt=""
-                                />
-                                <p>
-                                    Lorem ipsum dolor sit amet consectetur
-                                    adipisicing elit. Exercitationem eveniet
-                                    quasi in, molestiae eaque velit fugiat modi
-                                    quaerat delectus inventore.
-                                </p>
-                                <span>10 min ago</span>
-                            </div>
-                        </div>
-                        <div className="message">
-                            <img src="/avatar.png" alt="" />
-                            <div className="texts">
-                                <p>
-                                    Lorem ipsum dolor sit amet consectetur
-                                    adipisicing elit. Exercitationem eveniet
-                                    quasi in, molestiae eaque velit fugiat modi
-                                    quaerat delectus inventore.
-                                </p>
-                                <span>10 min ago</span>
-                            </div>
-                        </div>
-                        <div className="message">
-                            <img src="/avatar.png" alt="" />
-                            <div className="texts">
-                                <p>
-                                    Lorem ipsum dolor sit amet consectetur
-                                    adipisicing elit. Exercitationem eveniet
-                                    quasi in, molestiae eaque velit fugiat modi
-                                    quaerat delectus inventore.
-                                </p>
-                                <span>10 min ago</span>
-                            </div>
-                        </div>
-                        <div className="message own">
-                            <div className="texts">
-                                <p>
-                                    Lorem ipsum dolor sit amet consectetur
-                                    adipisicing elit. Exercitationem eveniet
-                                    quasi in, molestiae eaque velit fugiat modi
-                                    quaerat delectus inventore.
-                                </p>
-                                <span>10 min ago</span>
-                            </div>
-                        </div>
+                        ))}
                         <div ref={lastMessageRef}></div>
                     </div>
-                    <div className="bottom">
+                    <form className="bottom" onSubmit={handleNewMessage}>
                         <div className="icons">
                             <img src="/img.png" alt="" />
                             <img src="/camera.png" alt="" />
@@ -116,6 +112,7 @@ const Chat = () => {
                             onChange={(event) =>
                                 setMessageInput(() => event.target.value)
                             }
+                            name="message"
                         />
                         <div className="emoji">
                             <img
@@ -132,8 +129,10 @@ const Chat = () => {
                                 />
                             </div>
                         </div>
-                        <button className="sendButton">Send</button>
-                    </div>
+                        <button className="sendButton" type="submit">
+                            Send
+                        </button>
+                    </form>
                 </>
             )}
         </div>

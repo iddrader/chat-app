@@ -51,6 +51,7 @@ const AddUser = () => {
             .from("userChats")
             .select()
             .eq("id", user?.id);
+        error && toast.error(error.message);
 
         // add chat entry to user's chats list
         if (data?.length == 0) {

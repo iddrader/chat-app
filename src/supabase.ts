@@ -91,3 +91,7 @@ export const getCurrentChats = async (): Promise<IChat[]> => {
 // }
 
 export default supabase;
+
+export const getOpenedChatInfo = async (chatId: string | undefined) => {
+    if (!chatId) return;
+};

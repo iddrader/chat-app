@@ -5,6 +5,14 @@ export interface IAvatarState {
     imageURL: string;
 }
 
+export interface IMessage {
+    chatId: string;
+    senderId: string;
+    text: string;
+    image: string | undefined;
+    createdAt: string;
+}
+
 export interface ISessionStore {
     value: Session | null;
     customUser: ICustomUser | null;
@@ -42,9 +50,22 @@ export interface IChatsList {
 export interface IOpenedChat {
     id: string;
     created_at: string;
-    messages: object[];
+    messages: IMessage[];
+    recieverId: string;
+    reciever: string | undefined;
+    avatar: string;
 }
 
 export interface IOpenedChatStore {
     value: IOpenedChat | undefined;
+}
+
+export interface IOpenedChatInfo {
+    avatar: string;
+    description: string;
+    messages: IMessage[];
+}
+
+export interface IOpenedChatInfoStore {
+    value: IOpenedChatInfo | undefined;
 }

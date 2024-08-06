@@ -1,10 +1,14 @@
 import { toast } from "react-toastify";
 import "../assets/scss/detail.scss";
-import supabase from "../supabase";
-import { useDispatch } from "react-redux";
+import supabase, { getAvatar } from "../supabase";
+import { useDispatch, useSelector } from "react-redux";
 import { setSession } from "../slices/sessionSlice";
+import { RootState } from "../store";
 
 const Detail = () => {
+    const openedChat = useSelector(
+        (state: RootState) => state.openedChat.value
+    );
     const dispatch = useDispatch();
 
     const handleLogout = async () => {
@@ -16,8 +20,8 @@ const Detail = () => {
     return (
         <div className="detail">
             <div className="user">
-                <img src="/avatar.png" alt="" />
-                <h2>Jane Doe</h2>
+                <img src={getAvatar(openedChat?.avatar)} alt="" />
+                <h2>{openedChat?.reciever}</h2>
                 <p>Lorem ipsum dolor, sit amet.</p>
             </div>
             <div className="info">
