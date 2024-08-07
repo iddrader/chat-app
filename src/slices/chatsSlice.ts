@@ -10,7 +10,7 @@ const chatsSlice = createSlice({
     name: "chats",
     initialState,
     reducers: {
-        setChats: (state, action: PayloadAction<IChat[]>) => {
+        setChats: (state, action: PayloadAction<IChat[] | undefined>) => {
             state.value = action.payload;
         },
     },

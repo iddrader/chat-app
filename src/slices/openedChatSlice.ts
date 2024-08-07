@@ -9,7 +9,10 @@ const openedChatSlice = createSlice({
     name: "openedChat",
     initialState,
     reducers: {
-        setOpenedChat: (state, action: PayloadAction<IOpenedChat>) => {
+        setOpenedChat: (
+            state,
+            action: PayloadAction<IOpenedChat | undefined>
+        ) => {
             state.value = action.payload;
         },
         updateMessages: (state, action: PayloadAction<IMessage[]>) => {

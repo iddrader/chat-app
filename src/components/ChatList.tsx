@@ -37,6 +37,7 @@ const ChatList = () => {
     };
 
     useEffect(() => {
+        handleUserChatsUpdate();
         supabase
             .channel("userChats")
             .on(

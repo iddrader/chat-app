@@ -2,8 +2,10 @@ import { toast } from "react-toastify";
 import "../assets/scss/detail.scss";
 import supabase, { getAvatar } from "../supabase";
 import { useDispatch, useSelector } from "react-redux";
-import { setSession } from "../slices/sessionSlice";
+import { setCustomUser, setSession } from "../slices/sessionSlice";
 import { RootState } from "../store";
+import { setOpenedChat } from "../slices/openedChatSlice";
+import { setChats } from "../slices/chatsSlice";
 
 const Detail = () => {
     const openedChat = useSelector(
@@ -16,6 +18,9 @@ const Detail = () => {
         const { error } = await supabase.auth.signOut();
         if (error) toast.error("Error logging out, please, try again");
         dispatch(setSession(null));
+        dispatch(setCustomUser(null));
+        dispatch(setOpenedChat(undefined));
+        dispatch(setChats(undefined));
     };
 
     const handleBlock = async () => {
