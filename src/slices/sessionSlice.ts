@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Session } from "@supabase/supabase-js";
 import { ICustomUser, ISessionStore } from "../types";
-import { getCurrentCustomUser, getCurrentSession } from "../supabase";
+import { getCurrentCustomUser } from "../supabase";
 
 const initialState: ISessionStore = {
-    value: await getCurrentSession(),
+    value: null,
     customUser: null,
 };
 

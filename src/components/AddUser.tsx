@@ -47,12 +47,12 @@ const AddUser = () => {
             avatar: "",
         };
 
-        // to check if the userChats row exists for this user
-        const { error } = await supabase
-            .from("userChats")
-            .select()
-            .eq("id", user?.id);
-        error && toast.error(error.message);
+        // // to check if the userChats row exists for this user
+        // const { error } = await supabase
+        //     .from("userChats")
+        //     .select()
+        //     .eq("id", user?.id);
+        // error && toast.error(error.message);
 
         // add chat entry to user's chats list
 

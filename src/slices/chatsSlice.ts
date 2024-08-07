@@ -1,9 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IChat, IChatsList } from "../types";
-import { getCurrentChats } from "../supabase";
 
 const initialState: IChatsList = {
-    value: await getCurrentChats(),
+    value: undefined,
 };
 
 const chatsSlice = createSlice({

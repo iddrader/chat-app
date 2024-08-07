@@ -41,6 +41,8 @@ export const getCurrentSession = async () => {
 export const getCurrentCustomUser = async (
     id: string | null
 ): Promise<ICustomUser | null> => {
+    if (id == null) return null;
+
     const { data, error } = await supabase
         .from("customUsers")
         .select()
