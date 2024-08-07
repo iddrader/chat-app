@@ -48,7 +48,7 @@ const AddUser = () => {
         };
 
         // to check if the userChats row exists for this user
-        const { data, error } = await supabase
+        const { error } = await supabase
             .from("userChats")
             .select()
             .eq("id", user?.id);
@@ -64,7 +64,7 @@ const AddUser = () => {
                 .then(({ error }) => toast.error(error?.message));
             dispatch(setChats([...userChats, newUserChat]));
 
-            const { data, error } = await supabase
+            await supabase
                 .from("userChats")
                 .update({
                     chats: [

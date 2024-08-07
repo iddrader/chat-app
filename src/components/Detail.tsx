@@ -25,7 +25,7 @@ const Detail = () => {
 
     const handleBlock = async () => {
         if (!user || !openedChat) return;
-        const { data, error } = await supabase
+        const { error } = await supabase
             .from("customUsers")
             .update({ blocked: [...user.blocked, openedChat?.recieverId] });
         error && toast.error(error.message);

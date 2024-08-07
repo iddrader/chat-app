@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Chat from "./components/Chat";
 import Detail from "./components/Detail";
 import List from "./components/List";

@@ -6,6 +6,7 @@ import { RootState } from "../store";
 import supabase, { getAvatar } from "../supabase";
 import { v4 as uuidv4 } from "uuid";
 import { updateMessages } from "../slices/openedChatSlice";
+import { toast } from "react-toastify";
 
 const Chat = () => {
     const [emojiOpened, setEmojiOpened] = useState(false);
@@ -51,6 +52,7 @@ const Chat = () => {
             .from("chats")
             .select()
             .eq("id", openedChat?.id);
+        error && toast.error(error.message);
 
         const newMessage = {
             chatId: openedChat?.id,

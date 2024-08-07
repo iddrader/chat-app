@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IChat, IMessage, IOpenedChat, IOpenedChatStore } from "../types";
+import { IMessage, IOpenedChat, IOpenedChatStore } from "../types";
 
 const initialState: IOpenedChatStore = {
     value: undefined,
