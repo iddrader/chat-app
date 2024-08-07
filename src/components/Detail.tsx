@@ -9,12 +9,21 @@ const Detail = () => {
     const openedChat = useSelector(
         (state: RootState) => state.openedChat.value
     );
+    const user = useSelector((state: RootState) => state.session.customUser);
     const dispatch = useDispatch();
 
     const handleLogout = async () => {
         const { error } = await supabase.auth.signOut();
         if (error) toast.error("Error logging out, please, try again");
         dispatch(setSession(null));
+    };
+
+    const handleBlock = async () => {
+        if (!user || !openedChat) return;
+        const { data, error } = await supabase
+            .from("customUsers")
+            .update({ blocked: [...user.blocked, openedChat?.recieverId] });
+        error && toast.error(error.message);
     };
 
     return (
@@ -42,7 +51,7 @@ const Detail = () => {
                         <span>Shared photos</span>
                         <img src="/arrowUp.png" alt="" />
                     </div>
-                    <div className="photos">
+                    {/* <div className="photos">
                         <div className="photoItem">
                             <div className="photoDetail">
                                 <img
@@ -73,7 +82,7 @@ const Detail = () => {
                             </div>
                             <img src="/download.png" alt="" className="icon" />
                         </div>
-                    </div>
+                    </div> */}
                 </div>
                 <div className="option">
                     <div className="title">
@@ -82,7 +91,7 @@ const Detail = () => {
                     </div>
                 </div>
                 <div className="buttonsContainer">
-                    <button>Block User</button>
+                    <button onClick={handleBlock}>Block User</button>
                     <button className="logout" onClick={handleLogout}>
                         Logout
                     </button>

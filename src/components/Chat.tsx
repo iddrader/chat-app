@@ -1,19 +1,25 @@
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 import "../assets/scss/chat.scss";
 import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
 import supabase, { getAvatar } from "../supabase";
 import { v4 as uuidv4 } from "uuid";
+import { updateMessages } from "../slices/openedChatSlice";
 
 const Chat = () => {
     const [emojiOpened, setEmojiOpened] = useState(false);
     const [messageInput, setMessageInput] = useState("");
     const lastMessageRef = useRef<HTMLDivElement>(null);
+    const dispatch = useDispatch();
     const user = useSelector((state: RootState) => state.session.customUser);
     const openedChat = useSelector(
         (state: RootState) => state.openedChat.value
     );
+
+    const handleMessagesUpdate = async (data: any) => {
+        dispatch(updateMessages(data.new.messages));
+    };
 
     const handleEmoji = (event: EmojiClickData) => {
         setMessageInput((prev) => prev + event.emoji);
@@ -23,6 +29,14 @@ const Chat = () => {
 
     useEffect(() => {
         lastMessageRef.current?.scrollIntoView();
+        supabase
+            .channel("chats")
+            .on(
+                "postgres_changes",
+                { event: "UPDATE", schema: "public", table: "chats" },
+                handleMessagesUpdate
+            )
+            .subscribe();
     }, [openedChat]);
 
     const handleNewMessage = async (
@@ -45,6 +59,8 @@ const Chat = () => {
             image: "",
             createdAt: time,
         };
+
+        element.message.value = "";
 
         if (data) {
             await supabase

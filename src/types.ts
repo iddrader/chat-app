@@ -25,6 +25,7 @@ export interface ICustomUser {
     userID: string | null;
     avatar: string | null;
     chats_list: string[] | null;
+    blocked: string[];
 }
 
 export interface ISearchResultUser {

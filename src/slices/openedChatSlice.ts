@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IChat, IOpenedChat, IOpenedChatStore } from "../types";
+import { IChat, IMessage, IOpenedChat, IOpenedChatStore } from "../types";
 
 const initialState: IOpenedChatStore = {
     value: undefined,
@@ -12,8 +12,11 @@ const openedChatSlice = createSlice({
         setOpenedChat: (state, action: PayloadAction<IOpenedChat>) => {
             state.value = action.payload;
         },
+        updateMessages: (state, action: PayloadAction<IMessage[]>) => {
+            if (state.value) state.value.messages = action.payload;
+        },
     },
 });
 
-export const { setOpenedChat } = openedChatSlice.actions;
+export const { setOpenedChat, updateMessages } = openedChatSlice.actions;
 export default openedChatSlice.reducer;
