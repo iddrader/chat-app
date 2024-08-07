@@ -9,10 +9,10 @@ const initialState: ISessionStore = {
 };
 
 // Set initial custom user based on authenticatied user ID
-if (initialState.value)
-    initialState.customUser = await getCurrentCustomUser(
-        initialState.value?.user.id
-    );
+// if (initialState.value)
+//     initialState.customUser = await getCurrentCustomUser(
+//         initialState.value?.user.id
+//     );
 
 const sessionSlice = createSlice({
     name: "session",
